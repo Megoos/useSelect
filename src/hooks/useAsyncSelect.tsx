@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelect, UseSelectProps } from './useSelect';
 
 export interface UseAsyncSelectProps<T> extends Omit<UseSelectProps<T>, 'options'> {
+  //** Функция для получения вариантов выбора */
   loadOptions: (inputValue: string) => Promise<T[]>;
 }
 

@@ -1,27 +1,31 @@
-import React, { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 export interface UseSelectProps<T> {
+  //** Список вариантов выбора */
   options: T[];
+  //** Содержимое поля по умолчанию */
   defaultValue?: T;
-  inputValue?: string;
+  //** Селектор для лейбла в поле ввода */
   getOptionLabel: (option: T) => string;
+  //** Обработчик изменения значения 'inputValue' */
   onInputChange?: (value: string) => void;
+  //** Обработчик изменения значения 'value' */
   onChange?: (value: T | null) => void;
+  //** Фильтр для опций */
   filterOptions?: (option: T, value: string) => boolean;
 }
 
 export function useSelect<T>({
   options,
   defaultValue,
-  inputValue: inputValueProp,
   getOptionLabel,
   onInputChange,
   onChange,
   filterOptions,
 }: UseSelectProps<T>) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [inputValue, setInputValueState] = useState(inputValueProp || '');
   const [value, setValueState] = useState<T | null>(defaultValue || null);
+  const [inputValue, setInputValueState] = useState(defaultValue ? getOptionLabel(defaultValue) : '');
   const [isOpen, setIsOpenState] = useState(false);
 
   const optionsFilter = useCallback(() => {
