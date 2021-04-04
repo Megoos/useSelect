@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface UseSelectProps<T> {
   //** Список вариантов выбора */
@@ -16,7 +16,7 @@ export interface UseSelectProps<T> {
 }
 
 export function useSelect<T>({
-  options,
+  options: optionsProps,
   defaultValue,
   getOptionLabel,
   onInputChange,
@@ -27,14 +27,19 @@ export function useSelect<T>({
   const [value, setValueState] = useState<T | null>(defaultValue || null);
   const [inputValue, setInputValueState] = useState(defaultValue ? getOptionLabel(defaultValue) : '');
   const [isOpen, setIsOpenState] = useState(false);
+  const [options, setOptionsState] = useState<T[]>([]);
 
-  const optionsFilter = useCallback(() => {
-    if (filterOptions) {
-      return options.filter((value) => filterOptions(value, inputValue));
+  useEffect(() => {
+    if (isOpen) {
+      if (filterOptions) {
+        setOptionsState(optionsProps.filter((value) => filterOptions(value, inputValue)));
+      } else {
+        setOptionsState(optionsProps);
+      }
     } else {
-      return options;
+      setOptionsState([]);
     }
-  }, [options, inputValue, filterOptions]);
+  }, [isOpen, inputValue, optionsProps, filterOptions]);
 
   const handleInputValue = useCallback(
     (newValue: T | null) => {
@@ -112,13 +117,13 @@ export function useSelect<T>({
   const handleOptionClick = useCallback(
     (event: React.ChangeEvent<any>) => {
       const index = Number(event.currentTarget.getAttribute('data-index'));
-      const newOption = optionsFilter()[index];
+      const newOption = options[index];
 
       handleValue(newOption);
       handleInputValue(newOption);
       setIsOpenState(false);
     },
-    [handleValue, handleInputValue, optionsFilter]
+    [options, handleValue, handleInputValue]
   );
 
   const handleInputMouseDown = useCallback(() => {
@@ -152,7 +157,7 @@ export function useSelect<T>({
       };
     },
     isOpen,
-    options: optionsFilter(),
+    options,
     inputValue,
   };
 }
