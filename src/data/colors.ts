@@ -1,0 +1,16 @@
+export const colors = [
+  { title: 'Blue', color: '#0260E8' },
+  { title: 'Light Blue', color: '#64C7FF' },
+  { title: 'Mint', color: '#45D09E' },
+  { title: 'Green', color: '#41B619' },
+  { title: 'Light Green', color: '#CEFF9D' },
+  { title: 'Yellow', color: '#FFF851' },
+  { title: 'Peach', color: '#FE9E76' },
+  { title: 'Orange', color: '#FC9A40' },
+  { title: 'Pink', color: '#FF9CA1' },
+  { title: 'Red', color: '#E20338' },
+  { title: 'Purple', color: '#CA1A8E' },
+  { title: 'Violet', color: '#A771FE' },
+  { title: 'Gray', color: '#939598' },
+  { title: 'Light Gray', color: '#F1F2F2' },
+];

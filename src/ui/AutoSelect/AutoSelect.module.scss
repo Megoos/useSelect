@@ -1,0 +1,34 @@
+.container {
+  position: relative;
+}
+
+.input {
+  width: 200px;
+  box-sizing: border-box;
+}
+
+.listbox {
+  width: 200px;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  position: absolute;
+  list-style: none;
+  background-color: white;
+  overflow: auto;
+  max-height: 200px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  color: black;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.option {
+  padding: 5px;
+  &:hover {
+    background-color: #2977f5;
+    color: white;
+  }
+}
