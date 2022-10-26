@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export interface UseSelectProps<T> {
   //** Список вариантов выбора */
@@ -41,96 +41,84 @@ export function useSelect<T>({
     }
   }, [isOpen, inputValue, optionsProps, filterOptions]);
 
-  const handleInputValue = useCallback(
-    (newValue: T | null) => {
-      let newInputValue;
-      if (newValue === null) {
-        newInputValue = '';
-      } else {
-        newInputValue = getOptionLabel(newValue);
-      }
+  const handleInputValue = (newValue: T | null) => {
+    let newInputValue;
+    if (newValue === null) {
+      newInputValue = '';
+    } else {
+      newInputValue = getOptionLabel(newValue);
+    }
 
-      if (inputValue === newInputValue) {
-        return;
-      }
+    if (inputValue === newInputValue) {
+      return;
+    }
 
-      setInputValueState(newInputValue);
+    setInputValueState(newInputValue);
+
+    if (onInputChange) {
+      onInputChange(newInputValue);
+    }
+  };
+
+  const handleValue = (newValue: T | null) => {
+    if (value === newValue) {
+      return;
+    }
+
+    if (onChange) {
+      onChange(newValue);
+    }
+
+    setValueState(newValue);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+
+    if (inputValue !== newValue) {
+      setInputValueState(newValue);
 
       if (onInputChange) {
-        onInputChange(newInputValue);
+        onInputChange(newValue);
       }
-    },
-    [inputValue, getOptionLabel, onInputChange]
-  );
+    }
 
-  const handleValue = useCallback(
-    (newValue: T | null) => {
-      if (value === newValue) {
-        return;
-      }
+    if (newValue === '') {
+      handleValue(null);
+    }
 
-      if (onChange) {
-        onChange(newValue);
-      }
-
-      setValueState(newValue);
-    },
-    [value, onChange]
-  );
-
-  const handleInputChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = event.target.value;
-
-      if (inputValue !== newValue) {
-        setInputValueState(newValue);
-
-        if (onInputChange) {
-          onInputChange(newValue);
-        }
-      }
-
-      if (newValue === '') {
-        handleValue(null);
-      }
-
-      if (!isOpen) {
-        setIsOpenState(true);
-      }
-    },
-    [inputValue, isOpen, onInputChange, handleValue]
-  );
-
-  const handleFocus = useCallback(() => {
-    setIsOpenState(true);
-  }, []);
-
-  const handleBlur = useCallback(() => {
-    handleInputValue(value);
-    setIsOpenState(false);
-  }, [value, handleInputValue]);
-
-  const handleClick = useCallback(() => {
-    inputRef.current?.focus();
-  }, []);
-
-  const handleOptionClick = useCallback(
-    (event: React.ChangeEvent<any>) => {
-      const index = Number(event.currentTarget.getAttribute('data-index'));
-      const newOption = options[index];
-
-      handleValue(newOption);
-      handleInputValue(newOption);
-      setIsOpenState(false);
-    },
-    [options, handleValue, handleInputValue]
-  );
-
-  const handleInputMouseDown = useCallback(() => {
     if (!isOpen) {
       setIsOpenState(true);
     }
-  }, [isOpen]);
+  };
+
+  const handleFocus = () => {
+    setIsOpenState(true);
+  };
+
+  const handleBlur = () => {
+    handleInputValue(value);
+    setIsOpenState(false);
+  };
+
+  const handleClick = () => {
+    inputRef.current?.focus();
+  };
+
+  const handleOptionClick = (event: React.ChangeEvent<any>) => {
+    const index = Number(event.currentTarget.getAttribute('data-index'));
+    const newOption = options[index];
+
+    handleValue(newOption);
+    handleInputValue(newOption);
+    setIsOpenState(false);
+  };
+
+  const handleInputMouseDown = () => {
+    if (!isOpen) {
+      setIsOpenState(true);
+    }
+  };
 
   return {
     rootProps: () => ({
